@@ -18,12 +18,17 @@ export default function App() {
       <ambientLight 
         intensity = { 0.1}
       />
-      <pointLight position={[5, 5, 5]} intensity={1} />
-      <pointLight position={[-3, -3, 2]} />
-      <Environment
-        files = "./Environments/field_2k.hdr"
+      <directionalLight 
+      position={[5, 5, 5]} 
+      intensity={0.1} />
+      <pointLight 
+      position={[-3, -3, 2]}
+      intensity={0.1} 
+      />
+      {/* <Environment
+        files = "./Environments/envmap.hdr"
          
-        />
+        /> */}
         <Model />
     </Canvas>
   

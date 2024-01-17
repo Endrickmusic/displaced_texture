@@ -16,7 +16,7 @@ export function Model(props) {
 
     useFrame((state, delta) => {
       customUniforms.uTime.value += 0.01
-      planeRef.current.rotation.x = planeRef.current.rotation.y += delta / 12
+      // planeRef.current.rotation.x = planeRef.current.rotation.y += delta / 12
 
     })
 
@@ -61,6 +61,7 @@ export function Model(props) {
     }
 
     const normalTexture = useLoader(TextureLoader, './Textures/waternormals.jpeg')
+    const imageTexture = useLoader(TextureLoader, './Textures/gradient.png')
     const envMap = useEnvironment({files : './Environments/envmap.hdr'})
 
   return (
@@ -77,20 +78,20 @@ export function Model(props) {
         />
         <meshStandardMaterial 
         onBeforeCompile = { onBeforeCompile }
-        color = { 0xf4c400 }
+        color = { 0xffffff }
+        map = { imageTexture }
         envMap = { envMap }
-        normalMap = { normalTexture }
+        envMapIntensity = { 0.1 }
+        // normalMap = {normalTexture }
         normalScale = { [0.07, 0.07] }
-        roughness = { 0.16 }
-        metalness = { 1 }
+        roughness = { 0.12 }
+        metalness = { 0.0 }
         side = { DoubleSide }
+        
         />
 
-        {/* <MeshNormalMaterial /> */}
       </mesh>
       
     </group>
   );
 }
-
-useGLTF.preload("./models/LeePerrySmith/LeePerrySmith.glb");
