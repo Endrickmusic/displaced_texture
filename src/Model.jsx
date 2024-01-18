@@ -43,10 +43,20 @@ export function Model(props) {
             `
                 #include <beginnormal_vertex>
     
-                float angle = sin(position.y + uTime) * 0.2;
-                mat2 rotateMatrix = get2dRotateMatrix(angle);
-    
-                objectNormal.xz = rotateMatrix * objectNormal.xz;
+                float angleX = sin(position.x + uTime) * 0.04;
+                float angleX2 = cos(position.x + (uTime * 1.1)) * 0.12;
+                float angleY = cos(position.y + (uTime * 0.7)) * 0.11;
+                float angleY2 = sin(position.y + (uTime * 0.1)) * 0.08;
+
+                mat2 rotateMatrixX = get2dRotateMatrix(angleX);
+                mat2 rotateMatrixX2 = get2dRotateMatrix(angleX2);
+                mat2 rotateMatrixY = get2dRotateMatrix(angleY);
+                mat2 rotateMatrixY2 = get2dRotateMatrix(angleY2);
+
+                objectNormal.xz = rotateMatrixX * objectNormal.xz;
+                objectNormal.xz = rotateMatrixX2 * objectNormal.xz;
+                objectNormal.xz = rotateMatrixY * objectNormal.xz;
+                objectNormal.xz = rotateMatrixY2 * objectNormal.xz;
             `
         )
 
@@ -55,7 +65,10 @@ export function Model(props) {
         `
             #include <begin_vertex>
 
-            transformed.xz = rotateMatrix * transformed.xz;
+            transformed.xz = rotateMatrixX * transformed.xz;
+            transformed.xz = rotateMatrixX2 * transformed.xz;
+            transformed.xz = rotateMatrixY * transformed.xz;
+            transformed.xz = rotateMatrixY2 * transformed.xz;
         `
      )
     }
@@ -81,10 +94,10 @@ export function Model(props) {
         color = { 0xffffff }
         map = { imageTexture }
         envMap = { envMap }
-        envMapIntensity = { 0.1 }
-        // normalMap = {normalTexture }
-        normalScale = { [0.07, 0.07] }
-        roughness = { 0.12 }
+        envMapIntensity = { 0.2 }
+        normalMap = {normalTexture }
+        normalScale = { [0.035, 0.035] }
+        roughness = { 0.22 }
         metalness = { 0.0 }
         side = { DoubleSide }
         
