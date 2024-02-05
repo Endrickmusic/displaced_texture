@@ -1,6 +1,6 @@
 import React from "react";
-import { useGLTF, useEnvironment } from "@react-three/drei";
-import { useLoader, useFrame } from '@react-three/fiber'
+import { useEnvironment, useTexture } from "@react-three/drei";
+import { useFrame } from '@react-three/fiber'
 import { TextureLoader } from '/node_modules/three/src/loaders/TextureLoader'
 import { DoubleSide } from "three"
 import { useRef } from "react"
@@ -73,8 +73,8 @@ export function Model(props) {
      )
     }
 
-    const normalTexture = useLoader(TextureLoader, './Textures/waternormals.jpeg')
-    const imageTexture = useLoader(TextureLoader, './Textures/gradient.png')
+    const normalTexture = useTexture('./textures/waternormals.jpeg')
+    const imageTexture = useTexture('./textures/gradient.png')
     const envMap = useEnvironment({files : './Environments/envmap.hdr'})
 
   return (
@@ -94,13 +94,16 @@ export function Model(props) {
         color = { 0xffffff }
         map = { imageTexture }
         envMap = { envMap }
-        envMapIntensity = { 0.2 }
+        envMapIntensity = { 0.0 }
         normalMap = {normalTexture }
         normalScale = { [0.035, 0.035] }
         roughness = { 0.22 }
         metalness = { 0.0 }
         side = { DoubleSide }
-        
+        flatShading = { false }
+        emissiveIntensity = { .75 }
+        emissiveMap = { imageTexture }
+        emissive = { 0xffffff }
         />
 
       </mesh>
