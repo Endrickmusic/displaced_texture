@@ -25,10 +25,9 @@ export default function Shader(){
     useFrame((state) => {
       let time = state.clock.getElapsedTime()
   
-      
+      meshRef.current.rotation.y = abs(sin(time))
       meshRef.current.material.uniforms.uTime.value = time
-      meshRef.current.material.uniforms.uResolution.value = new Vector2(pixel.x, pixel.y);
-      
+      meshRef.current.material.uniforms.uResolution.value = new Vector2(pixel.x, pixel.y)    
     })
   
     console.log(pixel)
@@ -57,7 +56,7 @@ export default function Shader(){
       <mesh 
       ref = { meshRef }
       scale = { size }
-      position = {[20, -5, 0]}
+      position = {[20, -15, 0]}
       >
           <planeGeometry args={[1, 1]} />
           <shaderMaterial

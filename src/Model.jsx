@@ -1,28 +1,44 @@
 import React from "react";
 import { useEnvironment, useTexture } from "@react-three/drei";
 import { useFrame } from '@react-three/fiber'
-import { TextureLoader } from '/node_modules/three/src/loaders/TextureLoader'
-import { DoubleSide } from "three"
-import { useRef } from "react"
+import { DoubleSide, MathUtils } from "three"
+import { useRef, useState, useEffect } from "react"
 
 
 export function Model(props) {
-
+  console.log("Model component rendered");
   const planeRef = useRef()
+  const materialRef = useRef()
+
+  const hovered = useRef(false)
+  const transValue = hovered.current ? 3.0 : 1.0
+  console.log('hovered:', hovered.current)
+  console.log(planeRef.current)
 
    const customUniforms = {
-        uTime: { value: 0 }
+        uTime: { value: 0 },
+        uDisplay : { value: 1.0 }
     }
 
     useFrame((state, delta) => {
       customUniforms.uTime.value += 0.01
+      const transValue = hovered.current ? 3.0 : 1.0
       // planeRef.current.rotation.x = planeRef.current.rotation.y += delta / 12
-
+      customUniforms.uDisplay.value = MathUtils.lerp(customUniforms.uDisplay.value, transValue, 0.075)
+      // customUniforms.uDisplay.value += 0.001 
+      // console.log('Time:', customUniforms.uTime.value);
+      console.log('Display:', customUniforms.uDisplay.value);
+      console.log('hovered:', hovered.current)
+      // if (materialRef.current && materialRef.current.onBeforeCompile) {
+      //   materialRef.current.onBeforeCompile();
+      // }
     })
+    
+    function modMaterial() {
+    planeRef.current.material.onBeforeCompile = (shader) => {
 
-    const onBeforeCompile = (shader) => 
-    {
-    shader.uniforms.uTime = customUniforms.uTime
+        console.log('Shader compilation triggered')
+    shader.uniforms = {...customUniforms, ...shader.uniforms }  
 
     shader.vertexShader = shader.vertexShader.replace(
         '#include <common>',
@@ -30,6 +46,7 @@ export function Model(props) {
             #include <common>
 
             uniform float uTime;
+            uniform float uDisplay;
 
             mat2 get2dRotateMatrix(float _angle)
             {
@@ -43,10 +60,14 @@ export function Model(props) {
             `
                 #include <beginnormal_vertex>
     
-                float angleX = sin(position.x + uTime) * 0.04;
-                float angleX2 = cos(position.x + (uTime * 1.1)) * 0.12;
-                float angleY = cos(position.y + (uTime * 0.7)) * 0.11;
-                float angleY2 = sin(position.y + (uTime * 0.1)) * 0.08;
+                float angleX = sin(position.x + uTime) * 0.03 * uDisplay;
+                float angleX2 = cos(position.x + (uTime * 1.1)) * 0.07 * uDisplay;
+                float angleY = cos(position.y + (uTime * 0.7)) * 0.04 * uDisplay;
+                float angleY2 = sin(position.y + (uTime * 0.1)) * 0.06 * uDisplay;
+                // float angleX = sin(position.x + uTime) * 0.03;
+                // float angleX2 = cos(position.x + (uTime * 1.1)) * 0.07;
+                // float angleY = cos(position.y + (uTime * 0.7)) * 0.04;
+                // float angleY2 = sin(position.y + (uTime * 0.1)) * 0.06;
 
                 mat2 rotateMatrixX = get2dRotateMatrix(angleX);
                 mat2 rotateMatrixX2 = get2dRotateMatrix(angleX2);
@@ -72,6 +93,18 @@ export function Model(props) {
         `
      )
     }
+  }
+
+
+    useEffect(() => {
+      console.log('useEffect triggered')
+      console.log(materialRef)
+        modMaterial()
+        // materialRef.customProgramCacheKey = MathUtils.lerp(3., 1., 0.75)
+        // Force recompilation by setting needsUpdate to true
+        // materialRef.current.needsUpdate = true
+        console.log(materialRef.customProgramCacheKey)     
+    }, [hovered])
 
     const normalTexture = useTexture('./textures/waternormals.jpeg')
     const imageTexture = useTexture('./textures/gradient.png')
@@ -83,6 +116,10 @@ export function Model(props) {
       ref = { planeRef }
       scale = {0.2}
       rotation = { [-0.2*Math.PI, 0.1*Math.PI, 0] }
+      // onPointerOver = {(e) => customUniforms.uDisplay.value = MathUtils.lerp(customUniforms.uDisplay.value, 3., 0.3)} 
+      // onPointerOut = {(e) => customUniforms.uDisplay.value = MathUtils.lerp(customUniforms.uDisplay.value, 1., 0.3)}
+      onPointerOver = {(e) => hovered.current = true}
+      onPointerOut = {(e) => hovered.current = false}
       >
        
         <planeGeometry
@@ -90,7 +127,9 @@ export function Model(props) {
         
         />
         <meshStandardMaterial 
-        onBeforeCompile = { onBeforeCompile }
+        ref={ materialRef }
+        // onBeforeCompile = { hovered? null : onBeforeCompile }
+        // onBeforeCompile = { onBeforeCompile }
         color = { 0xffffff }
         map = { imageTexture }
         envMap = { envMap }

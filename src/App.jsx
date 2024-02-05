@@ -25,17 +25,30 @@ export default function App() {
       />
       <directionalLight 
       position={[5, 5, 5]} 
-      intensity={0.4} />
+      intensity={1.0} 
+      castShadow
+      />
       <pointLight 
       position={[-3, -3, 2]}
       intensity={0.0} 
+      castShadow
       />
       {/* <Environment
         files = "./Environments/envmap.hdr"
          
         /> */}
-        <Model />
+        <Model 
+        receiveShadow
+        />
         {/* <Shader /> */}
+        <mesh
+        receiveShadow
+        position = {[0, -2, 0]}
+        rotation = {[-0.5*Math.PI, 0, 0]}
+        >
+        <planeGeometry args={[5,5,32,32]} />  
+        <meshStandardMaterial />     
+        </mesh>
     </Canvas>
   
   );
