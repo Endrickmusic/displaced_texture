@@ -34,19 +34,19 @@ export default function App() {
       shadow-mapSize={1024}
       castShadow
       />
-      <pointLight 
-      position={[-3, -3, 2]}
-      intensity={0.0} 
+
+      <directionalLight 
+      position={[-1.2, 0.7, 0.2]} 
+      intensity={0.35} 
+      shadow-mapSize={1024}
+      castShadow
       />
-      {/* <Environment
-        files = "./Environments/envmap.hdr"
-         
-        /> */}
-        <Model 
-        receiveShadow
-        />
-        {/* <Shader /> */}
-        <mesh
+
+      <Model 
+      receiveShadow
+      />
+    
+      <mesh
         receiveShadow
         position = {[0, -2, 0]}
         rotation = {[-0.5*Math.PI, 0, 0]}
