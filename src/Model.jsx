@@ -173,8 +173,8 @@ export function Model(props) {
         envMapIntensity = { 0.0 }
         normalMap = {normalTexture }
         normalScale = { [0.035, 0.035] }
-        roughness = { 0.22 }
-        metalness = { 0.0 }
+        roughness = { 0.12 }
+        metalness = { 0.5 }
         side = { DoubleSide }
         flatShading = { false }
         emissiveIntensity = { .75 }

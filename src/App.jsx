@@ -21,11 +21,11 @@ export default function App() {
       >
       <OrbitControls />
       <ambientLight 
-        intensity = { 0.0}
+        intensity = { 0.3 }
       />
       <directionalLight 
-      position={[0, 3, 0]} 
-      intensity={1.0} 
+      position={[0.2, 0.5, 0.2]} 
+      intensity={0.35} 
       castShadow
       />
       <pointLight 
@@ -46,16 +46,9 @@ export default function App() {
         rotation = {[-0.5*Math.PI, 0, 0]}
         >
         <planeGeometry args={[5,5,32,32]} />  
-        <meshStandardMaterial />     
-        </mesh>
-        <mesh
-        receiveShadow
-        castShadow
-        position = {[0, 1.5, 0]}
-        rotation = {[-0.5*Math.PI, 0, 0]}
-        >
-        <planeGeometry args={[3,3,32,32]} />  
-        <meshStandardMaterial />     
+        <meshStandardMaterial 
+        color={0xffffff}
+        />     
         </mesh>
     </Canvas>
   
