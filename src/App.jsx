@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Canvas } from "@react-three/fiber";
-import { Environment, OrbitControls } from "@react-three/drei";
+import { Environment, OrbitControls, SoftShadows } from "@react-three/drei";
 
 import { Model } from "./Model.jsx"
 import Shader from "./Shader.jsx"
@@ -15,9 +15,15 @@ export default function App() {
 
     <Canvas 
       shadows 
+      colormanagement
       camera={{ position: [2, 2, 7], fov: 40 }}
       flat = { true }
       >
+      <SoftShadows 
+        size = {15}
+        samples = {15}
+        focus = {0.5}
+      />
       <OrbitControls />
       <ambientLight 
         intensity = { 0.3 }
@@ -25,6 +31,7 @@ export default function App() {
       <directionalLight 
       position={[0.2, 0.5, 0.2]} 
       intensity={0.35} 
+      shadow-mapSize={1024}
       castShadow
       />
       <pointLight 
