@@ -4,7 +4,7 @@ import { useEnvironment, useTexture } from "@react-three/drei";
 import { DoubleSide, MathUtils, RGBADepthPacking, MeshDepthMaterial } from "three"
 import { useRef, useEffect } from "react"
 
-import ModifiedShader from './ModifiedShader.jsx'
+import ModifiedShader from './NoiseShader.jsx'
 
 export function Model({onDepthMaterialUpdate}) {
   console.log("Model component rendered");
