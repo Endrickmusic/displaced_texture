@@ -45,7 +45,7 @@ export default function App() {
         position = {[0, -2, 0]}
         rotation = {[-0.5*Math.PI, 0, 0]}
         >
-        <planeGeometry args={[5,5,32,32]} />  
+        <planeGeometry args={[6,6,32,32]} />  
         <meshStandardMaterial 
         color={0xffffff}
         />     
