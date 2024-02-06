@@ -1,12 +1,25 @@
-import { DoubleSide, MathUtils, RGBADepthPacking, MeshDepthMaterial } from "three"
+import { RGBADepthPacking, MeshDepthMaterial, MathUtils } from "three"
+import { useRef, useEffect } from "react"
+import { useFrame } from '@react-three/fiber'
 
-export default function modMaterial(planeRef) {
+export default function modMaterial( {planeRef, onDepthMaterialUpdate, hovered} ) {
 
     const customUniforms = {
         uTime: { value: 0 },
-        uDisplay : { value: 1.0 }
-    }
+        uDisplay: { value: 1.0 }
+      }
 
+    useFrame((state, delta) => {
+        customUniforms.uTime.value += 0.01
+        const transValue = hovered.current ? 3.0 : 1.0
+        // planeRef.current.rotation.x = planeRef.current.rotation.y += delta / 12
+        customUniforms.uDisplay.value = MathUtils.lerp(customUniforms.uDisplay.value, transValue, 0.075)
+        // console.log('Time:', customUniforms.uTime.value);
+        console.log('Display:', customUniforms.uDisplay.value);
+        console.log('hovered:', hovered.current)
+      })
+
+    useEffect(() => {
 
     planeRef.current.material.onBeforeCompile = (shader) => {
 
@@ -64,12 +77,10 @@ export default function modMaterial(planeRef) {
         `
      )
     }
-  }
-
+  
   const depthMaterial = new MeshDepthMaterial({
     depthPacking: RGBADepthPacking
   })
-
 
   depthMaterial.onBeforeCompile = (shader) =>
    {
@@ -110,4 +121,15 @@ export default function modMaterial(planeRef) {
                 transformed.xz = rotateMatrixY2 * transformed.xz;
       `
       )
+      
+      if (onDepthMaterialUpdate) {
+        onDepthMaterialUpdate(depthMaterial.current)
    }
+
+}}, [planeRef, onDepthMaterialUpdate])
+
+
+return null
+}
+
+
