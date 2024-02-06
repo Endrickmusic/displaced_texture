@@ -28,6 +28,7 @@ export function Model({onDepthMaterialUpdate}) {
 
     const handleDepthMaterial = (material) => {
       // Do something with the depth material received from the child
+      planeRef.current.custumDepthMaterial = material;
       console.log('Depth material received:', material);
     };
 

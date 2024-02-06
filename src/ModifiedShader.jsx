@@ -15,8 +15,8 @@ export default function modMaterial( {planeRef, onDepthMaterialUpdate, hovered} 
         // planeRef.current.rotation.x = planeRef.current.rotation.y += delta / 12
         customUniforms.uDisplay.value = MathUtils.lerp(customUniforms.uDisplay.value, transValue, 0.075)
         // console.log('Time:', customUniforms.uTime.value);
-        console.log('Display:', customUniforms.uDisplay.value);
-        console.log('hovered:', hovered.current)
+        // console.log('Display:', customUniforms.uDisplay.value);
+        // console.log('hovered:', hovered.current)
       })
 
     useEffect(() => {
@@ -122,11 +122,14 @@ export default function modMaterial( {planeRef, onDepthMaterialUpdate, hovered} 
       `
       )
       
-      if (onDepthMaterialUpdate) {
-        onDepthMaterialUpdate(depthMaterial.current)
-   }
+    
+       
+  
 
-}}, [planeRef, onDepthMaterialUpdate])
+}
+planeRef.current.customDepthMaterial = depthMaterial
+onDepthMaterialUpdate(depthMaterial.current)
+}, [planeRef, onDepthMaterialUpdate])
 
 
 return null
