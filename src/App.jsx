@@ -24,14 +24,13 @@ export default function App() {
         intensity = { 0.0}
       />
       <directionalLight 
-      position={[5, 5, 5]} 
+      position={[0, 3, 0]} 
       intensity={1.0} 
       castShadow
       />
       <pointLight 
       position={[-3, -3, 2]}
       intensity={0.0} 
-      castShadow
       />
       {/* <Environment
         files = "./Environments/envmap.hdr"
@@ -47,6 +46,15 @@ export default function App() {
         rotation = {[-0.5*Math.PI, 0, 0]}
         >
         <planeGeometry args={[5,5,32,32]} />  
+        <meshStandardMaterial />     
+        </mesh>
+        <mesh
+        receiveShadow
+        castShadow
+        position = {[0, 1.5, 0]}
+        rotation = {[-0.5*Math.PI, 0, 0]}
+        >
+        <planeGeometry args={[3,3,32,32]} />  
         <meshStandardMaterial />     
         </mesh>
     </Canvas>

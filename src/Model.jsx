@@ -1,8 +1,8 @@
 import React from "react";
 import { useEnvironment, useTexture } from "@react-three/drei";
 import { useFrame } from '@react-three/fiber'
-import { DoubleSide, MathUtils } from "three"
-import { useRef, useState, useEffect } from "react"
+import { DoubleSide, MathUtils, RGBADepthPacking, MeshDepthMaterial } from "three"
+import { useRef, useEffect } from "react"
 
 
 export function Model(props) {
@@ -34,6 +34,10 @@ export function Model(props) {
       // }
     })
     
+    const depthMaterial = new MeshDepthMaterial({
+      depthPacking: RGBADepthPacking
+    })
+
     function modMaterial() {
     planeRef.current.material.onBeforeCompile = (shader) => {
 
@@ -64,10 +68,6 @@ export function Model(props) {
                 float angleX2 = cos(position.x + (uTime * 1.1)) * 0.07 * uDisplay;
                 float angleY = cos(position.y + (uTime * 0.7)) * 0.04 * uDisplay;
                 float angleY2 = sin(position.y + (uTime * 0.1)) * 0.06 * uDisplay;
-                // float angleX = sin(position.x + uTime) * 0.03;
-                // float angleX2 = cos(position.x + (uTime * 1.1)) * 0.07;
-                // float angleY = cos(position.y + (uTime * 0.7)) * 0.04;
-                // float angleY2 = sin(position.y + (uTime * 0.1)) * 0.06;
 
                 mat2 rotateMatrixX = get2dRotateMatrix(angleX);
                 mat2 rotateMatrixX2 = get2dRotateMatrix(angleX2);
@@ -95,14 +95,51 @@ export function Model(props) {
     }
   }
 
+  depthMaterial.onBeforeCompile = (shader) =>
+   {
+    shader.uniforms = {...customUniforms, ...shader.uniforms }  
+
+    shader.vertexShader = shader.vertexShader.replace(
+      '#include <common>',
+      `
+          #include <common>
+
+          uniform float uTime;
+          uniform float uDisplay;
+
+          mat2 get2dRotateMatrix(float _angle)
+          {
+              return mat2(cos(_angle), - sin(_angle), sin(_angle), cos(_angle));
+          }
+      `
+      )
+
+      shader.vertexShader = shader.vertexShader.replace(
+        '#include <begin_vertex>',
+        `
+            #include <begin_vertex>
+            float angleX = sin(position.x + uTime) * 0.03 * uDisplay;
+                float angleX2 = cos(position.x + (uTime * 1.1)) * 0.07 * uDisplay;
+                float angleY = cos(position.y + (uTime * 0.7)) * 0.04 * uDisplay;
+                float angleY2 = sin(position.y + (uTime * 0.1)) * 0.06 * uDisplay;
+
+                mat2 rotateMatrixX = get2dRotateMatrix(angleX);
+                mat2 rotateMatrixX2 = get2dRotateMatrix(angleX2);
+                mat2 rotateMatrixY = get2dRotateMatrix(angleY);
+                mat2 rotateMatrixY2 = get2dRotateMatrix(angleY2);
+
+                transformed.xz = rotateMatrixX * transformed.xz;
+                transformed.xz = rotateMatrixX2 * transformed.xz;
+                transformed.xz = rotateMatrixY * transformed.xz;
+                transformed.xz = rotateMatrixY2 * transformed.xz;
+      `
+      )
+   }
 
     useEffect(() => {
       console.log('useEffect triggered')
       console.log(materialRef)
         modMaterial()
-        // materialRef.customProgramCacheKey = MathUtils.lerp(3., 1., 0.75)
-        // Force recompilation by setting needsUpdate to true
-        // materialRef.current.needsUpdate = true
         console.log(materialRef.customProgramCacheKey)     
     }, [hovered])
 
@@ -116,10 +153,11 @@ export function Model(props) {
       ref = { planeRef }
       scale = {0.2}
       rotation = { [-0.2*Math.PI, 0.1*Math.PI, 0] }
-      // onPointerOver = {(e) => customUniforms.uDisplay.value = MathUtils.lerp(customUniforms.uDisplay.value, 3., 0.3)} 
-      // onPointerOut = {(e) => customUniforms.uDisplay.value = MathUtils.lerp(customUniforms.uDisplay.value, 1., 0.3)}
       onPointerOver = {(e) => hovered.current = true}
       onPointerOut = {(e) => hovered.current = false}
+      customDepthMaterial={depthMaterial}
+      castShadow
+      receiveShadow
       >
        
         <planeGeometry
@@ -128,7 +166,6 @@ export function Model(props) {
         />
         <meshStandardMaterial 
         ref={ materialRef }
-        // onBeforeCompile = { hovered? null : onBeforeCompile }
         // onBeforeCompile = { onBeforeCompile }
         color = { 0xffffff }
         map = { imageTexture }
