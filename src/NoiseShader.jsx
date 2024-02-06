@@ -35,6 +35,8 @@ export default function modMaterial( {planeRef, onDepthMaterialUpdate, hovered} 
             uniform float uTime;
             uniform float uDisplay;
 
+            varying vec2 vUv;
+
             //	Simplex 3D Noise 
             //	by Ian McEwan, Ashima Arts
             //
@@ -127,6 +129,30 @@ export default function modMaterial( {planeRef, onDepthMaterialUpdate, hovered} 
         `
             #include <begin_vertex>
 
+            vec2 noiseCoord = uv * vec2(3., 4.);
+
+            float tilt = -0.5 * uv.y;
+        
+            float incline = uv.x * 0.5;
+        
+            float offset = 0.5 * incline * mix(-0.5, 0.5, uv.y) ; 
+        
+            float noise = snoise(
+              vec3(
+              noiseCoord.x + uTime * .3, 
+              noiseCoord.y + uTime * .2, 
+              uTime * .4));
+        
+            noise = max(0., noise);
+            
+             vec3 pos = vec3(
+              position.x, 
+              position.y + noise * 1.1, 
+              position.z + noise * 1.2 + tilt  
+              );
+
+              vUv = uv;
+            transformed = pos ;
         `
      )
     }
@@ -229,7 +255,27 @@ export default function modMaterial( {planeRef, onDepthMaterialUpdate, hovered} 
         '#include <begin_vertex>',
         `
             #include <begin_vertex>
-           
+            vec2 noiseCoord = uv * vec2(3., 4.);
+
+            float tilt = -0.5 * uv.y;
+        
+            float incline = uv.x * 0.5;
+        
+            float offset = 0.5 * incline * mix(-0.5, 0.5, uv.y) ; 
+        
+            float noise = snoise(
+              vec3(
+              noiseCoord.x + uTime * 3., 
+              noiseCoord.y + uTime * 2., 
+              uTime * 8.));
+        
+            noise = max(0., noise);
+            
+             vec3 pos = vec3(
+              position.x, 
+              position.y + noise * .1, 
+              position.z + noise * .2 + tilt  
+              );
       `
       )
       

@@ -15,7 +15,6 @@ export default function App() {
 
     <Canvas 
       shadows 
-      colormanagement
       camera={{ position: [2, 2, 7], fov: 40 }}
       flat = { true }
       >
