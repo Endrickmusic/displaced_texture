@@ -1,22 +1,25 @@
-import { RGBADepthPacking, MeshDepthMaterial, MathUtils } from "three"
+import { RGBADepthPacking, MeshDepthMaterial, MathUtils, Vector2 } from "three"
 import { useRef, useEffect } from "react"
 import { useFrame } from '@react-three/fiber'
 
-export default function modMaterial( {planeRef, onDepthMaterialUpdate, hovered} ) {
+export default function modMaterial( {planeRef, onDepthMaterialUpdate, hovered, mouse} ) {
 
     const customUniforms = {
         uTime: { value: 0 },
-        uDisplay: { value: 1.0 }
+        uDisplay: { value: 1.0 },
+        uMouse: { value: new Vector2(0.5, 0.5) }
       }
 
     useFrame((state, delta) => {
-        customUniforms.uTime.value += 0.01
+        const time = state.clock.getElapsedTime() 
+        customUniforms.uTime.value = time 
         const transValue = hovered.current ? 3.0 : 1.0
         // planeRef.current.rotation.x = planeRef.current.rotation.y += delta / 12
         customUniforms.uDisplay.value = MathUtils.lerp(customUniforms.uDisplay.value, transValue, 0.075)
+        customUniforms.uMouse.value = mouse
         // console.log('Time:', customUniforms.uTime.value);
         // console.log('Display:', customUniforms.uDisplay.value);
-        // console.log('hovered:', hovered.current)
+        console.log('Mouse:', mouse)
       })
 
     useEffect(() => {
@@ -34,6 +37,7 @@ export default function modMaterial( {planeRef, onDepthMaterialUpdate, hovered} 
 
             uniform float uTime;
             uniform float uDisplay;
+            uniform vec2 uMouse;
 
             varying vec2 vUv;
 
@@ -120,7 +124,7 @@ export default function modMaterial( {planeRef, onDepthMaterialUpdate, hovered} 
             `
                 #include <beginnormal_vertex>
     
-                vec2 noiseCoord = uv * vec2(3., 4.);
+                vec2 noiseCoord = uv * vec2(3., 4.) + uMouse;
 
                 // float tilt = 1.0 * uv.y;
                 float tilt = 1.0;
@@ -133,15 +137,15 @@ export default function modMaterial( {planeRef, onDepthMaterialUpdate, hovered} 
             
                 float noise = snoise(
                   vec3(
-                  noiseCoord.x + uTime * .15 , 
-                  noiseCoord.y + uTime * .1 * uDisplay, 
+                  noiseCoord.x + uTime * .15 + uDisplay, 
+                  noiseCoord.y + uDisplay + uTime * .1 , 
                   uTime * .18)) ;
                   
                   noise = max(0., noise);
 
                   objectNormal = vec3(
                     objectNormal.x + noise * 1., 
-                    objectNormal.y + noise * 1.4 * uDisplay, 
+                    objectNormal.y + noise * 1.4, 
                     objectNormal.z + noise * 1.6 
                     );
 
@@ -155,7 +159,7 @@ export default function modMaterial( {planeRef, onDepthMaterialUpdate, hovered} 
            
              vec3 pos = vec3(
               position.x + noise * 1.5, 
-              position.y + noise * 1.4 * uDisplay, 
+              position.y + noise * 1.4, 
               position.z + noise * 1.6 
               );
 
@@ -180,6 +184,7 @@ export default function modMaterial( {planeRef, onDepthMaterialUpdate, hovered} 
 
           uniform float uTime;
           uniform float uDisplay;
+          uniform vec2 uMouse;
 
           //	Simplex 3D Noise 
           //	by Ian McEwan, Ashima Arts
@@ -282,7 +287,7 @@ export default function modMaterial( {planeRef, onDepthMaterialUpdate, hovered} 
               vec3 pos = vec3(
                   position.x, 
                   position.y + noise * 1.4 * uDisplay, 
-                  position.z + noise * 1.6 + tilt  
+                  position.z + noise * 1.6 
                   ) ;
     
                 transformed = pos;

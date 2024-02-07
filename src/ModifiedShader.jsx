@@ -1,4 +1,4 @@
-import { RGBADepthPacking, MeshDepthMaterial, MathUtils } from "three"
+import { RGBADepthPacking, MeshDepthMaterial, MathUtils, Vector2 } from "three"
 import { useRef, useEffect } from "react"
 import { useFrame } from '@react-three/fiber'
 
@@ -6,7 +6,8 @@ export default function modMaterial( {planeRef, onDepthMaterialUpdate, hovered} 
 
     const customUniforms = {
         uTime: { value: 0 },
-        uDisplay: { value: 1.0 }
+        uDisplay: { value: 1.0 },
+        uMouse: { type: 'vec2', value: new Vector2() },
       }
 
     useFrame((state, delta) => {
@@ -34,6 +35,7 @@ export default function modMaterial( {planeRef, onDepthMaterialUpdate, hovered} 
 
             uniform float uTime;
             uniform float uDisplay;
+            uniform vec2 uMouse;
 
             mat2 get2dRotateMatrix(float _angle)
             {
@@ -93,6 +95,7 @@ export default function modMaterial( {planeRef, onDepthMaterialUpdate, hovered} 
 
           uniform float uTime;
           uniform float uDisplay;
+          uniform vec2 uMouse;
 
           mat2 get2dRotateMatrix(float _angle)
           {

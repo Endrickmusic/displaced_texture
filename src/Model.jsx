@@ -2,7 +2,7 @@ import React from "react";
 import { useEnvironment, useTexture } from "@react-three/drei";
 
 import { DoubleSide, MathUtils, RGBADepthPacking, MeshDepthMaterial } from "three"
-import { useRef, useEffect } from "react"
+import { useRef, useEffect, useState } from "react"
 
 import ModifiedShader from './NoiseShader.jsx'
 
@@ -10,9 +10,12 @@ export function Model({onDepthMaterialUpdate}) {
   console.log("Model component rendered");
   const planeRef = useRef()
   const materialRef = useRef()
+  const mouseRef = useRef({ x: 0, y: 0 })
 
   const hovered = useRef(false)
-  const transValue = hovered.current ? 3.0 : 1.0
+  const transValue = hovered.current ? 1.5 : 1.0
+  const defaultUv = [0.5, 0.5]
+
   console.log('hovered:', hovered.current)
   console.log(planeRef.current)
 
@@ -21,6 +24,14 @@ export function Model({onDepthMaterialUpdate}) {
       console.log(materialRef)
         // ModifiedShader(planeRef, onDepthMaterialUpdate)    
     }, [hovered])
+
+    const handleMouseMove = (e) => {
+      mouseRef.current.x = 1 - e.uv.x;
+      mouseRef.current.y = 1 - e.uv.y;
+    };
+      // const [uv, setUv] = useState(defaultUv)
+      // const [clicked, click] = useState(false)
+    
 
     const normalTexture = useTexture('./textures/waternormals.jpeg')
     const imageTexture = useTexture('./textures/gradient.png')
@@ -35,6 +46,8 @@ export function Model({onDepthMaterialUpdate}) {
   return (
     <group dispose={null}>
       <mesh
+      onPointerMove={handleMouseMove}
+      // onClick={(e) => click(!clicked)}
       ref = { planeRef }
       scale = {0.2}
       rotation = { [-0.2*Math.PI, 0.1*Math.PI, 0] }
@@ -71,7 +84,8 @@ export function Model({onDepthMaterialUpdate}) {
       planeRef = {planeRef}
       onDepthMaterialUpdate = {handleDepthMaterial} 
       hovered = {hovered}
+      mouse = {mouseRef.current}
       />
     </group>
-  );
+  )
 }
