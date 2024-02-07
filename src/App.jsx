@@ -28,15 +28,15 @@ export default function App() {
         intensity = { 0.3 }
       />
       <directionalLight 
-      position={[0.2, 0.5, 0.2]} 
+      position={[0.2, 0.1, 0.2]} 
       intensity={0.35} 
       shadow-mapSize={1024}
       castShadow
       />
 
       <directionalLight 
-      position={[-1.2, 0.7, 0.2]} 
-      intensity={0.35} 
+      position={[-0.2, 0.15, 0.2]} 
+      intensity={0.55} 
       shadow-mapSize={1024}
       castShadow
       />
