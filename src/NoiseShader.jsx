@@ -120,7 +120,31 @@ export default function modMaterial( {planeRef, onDepthMaterialUpdate, hovered} 
             `
                 #include <beginnormal_vertex>
     
-        
+                vec2 noiseCoord = uv * vec2(3., 4.);
+
+                // float tilt = 1.0 * uv.y;
+                float tilt = 1.0;
+            
+                // float incline = uv.x * 1.;
+                float incline = 1.;
+            
+                // float offset = 0.5 * incline * mix(-0.5, 0.5, uv.y) ; 
+                float offset = 1. ; 
+            
+                float noise = snoise(
+                  vec3(
+                  noiseCoord.x + uTime * .15 , 
+                  noiseCoord.y + uTime * .1 * uDisplay, 
+                  uTime * .18)) ;
+                  
+                  noise = max(0., noise);
+
+                  objectNormal = vec3(
+                    objectNormal.x + noise * 1., 
+                    objectNormal.y + noise * 1.4 * uDisplay, 
+                    objectNormal.z + noise * 1.6 
+                    );
+
             `
         )
 
@@ -128,31 +152,15 @@ export default function modMaterial( {planeRef, onDepthMaterialUpdate, hovered} 
         '#include <begin_vertex>',
         `
             #include <begin_vertex>
-
-            vec2 noiseCoord = uv * vec2(3., 4.);
-
-            float tilt = -0.5 * uv.y;
-        
-            float incline = uv.x * 0.5;
-        
-            float offset = 0.5 * incline * mix(-0.5, 0.5, uv.y) ; 
-        
-            float noise = snoise(
-              vec3(
-              noiseCoord.x + uTime * .3, 
-              noiseCoord.y + uTime * .2, 
-              uTime * .4));
-        
-            noise = max(0., noise);
-            
+           
              vec3 pos = vec3(
-              position.x, 
-              position.y + noise * 1.1, 
-              position.z + noise * 1.2 + tilt  
+              position.x + noise * 1.5, 
+              position.y + noise * 1.4 * uDisplay, 
+              position.z + noise * 1.6 
               );
 
               vUv = uv;
-            transformed = pos ;
+            transformed = pos;
         `
      )
     }
@@ -265,17 +273,20 @@ export default function modMaterial( {planeRef, onDepthMaterialUpdate, hovered} 
         
             float noise = snoise(
               vec3(
-              noiseCoord.x + uTime * 3., 
-              noiseCoord.y + uTime * 2., 
-              uTime * 8.));
-        
-            noise = max(0., noise);
-            
-             vec3 pos = vec3(
-              position.x, 
-              position.y + noise * .1, 
-              position.z + noise * .2 + tilt  
-              );
+              noiseCoord.x + uTime * .15 , 
+              noiseCoord.y + uTime * .1 * uDisplay, 
+              uTime * .18));
+              
+              noise = max(0., noise);
+
+              vec3 pos = vec3(
+                  position.x, 
+                  position.y + noise * 1.4 * uDisplay, 
+                  position.z + noise * 1.6 + tilt  
+                  ) ;
+    
+                transformed = pos;
+
       `
       )
       
