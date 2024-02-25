@@ -73,8 +73,8 @@ export function Model(props) {
      )
     }
 
-    const normalTexture = useLoader(TextureLoader, './Textures/waternormals.jpeg')
-    const imageTexture = useLoader(TextureLoader, './Textures/gradient.png')
+    const normalTexture = useLoader(TextureLoader, './textures/waternormals.jpeg')
+    const imageTexture = useLoader(TextureLoader, './textures/gradient.png')
     const envMap = useEnvironment({files : './Environments/envmap.hdr'})
 
   return (
