@@ -58,7 +58,7 @@ export function Model({onDepthMaterialUpdate}) {
       receiveShadow
       >
         <planeGeometry
-        args ={[16, 16, 128, 128]}
+        args ={[16, 16, 256, 256]}
         
         />
         <meshStandardMaterial 
@@ -77,6 +77,7 @@ export function Model({onDepthMaterialUpdate}) {
         emissiveIntensity = { .75 }
         emissiveMap = { imageTexture }
         emissive = { 0xffffff }
+        wireframe = {true}
         />
 
       </mesh>
