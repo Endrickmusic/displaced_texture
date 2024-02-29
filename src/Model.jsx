@@ -65,7 +65,7 @@ export function Model({onDepthMaterialUpdate}) {
         ref={ materialRef }
         // onBeforeCompile = { onBeforeCompile }
         color = { 0xffffff }
-        map = { imageTexture }
+        // map = { imageTexture }
         envMap = { envMap }
         envMapIntensity = { 0.0 }
         normalMap = {normalTexture }
@@ -77,7 +77,7 @@ export function Model({onDepthMaterialUpdate}) {
         emissiveIntensity = { .75 }
         emissiveMap = { imageTexture }
         emissive = { 0xffffff }
-        wireframe = {true}
+        wireframe = {false}
         />
 
       </mesh>

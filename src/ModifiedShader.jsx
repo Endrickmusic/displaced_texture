@@ -64,6 +64,10 @@ export default function modMaterial( {planeRef, onDepthMaterialUpdate, hovered} 
                 objectNormal.xz = rotateMatrixX2 * objectNormal.xz;
                 objectNormal.xz = rotateMatrixY * objectNormal.xz;
                 objectNormal.xz = rotateMatrixY2 * objectNormal.xz;
+
+                // Varyings
+                vUv = uv;
+                vNormal = displacedNormal;
             `
         )
 
@@ -78,6 +82,17 @@ export default function modMaterial( {planeRef, onDepthMaterialUpdate, hovered} 
             transformed.xz = rotateMatrixY2 * transformed.xz;
         `
      )
+
+     shader.fragmentShader = shader.fragmentShader.replace(
+
+      '#include <color_fragment>',
+      `
+      #include <color_fragment>
+
+      vec3 col = 0.5 + 0.5 * cos(uTime * 0.4 + vUv.xyx + vec3(0,2,4));
+      diffuseColor = vec4(col, 1.0);
+      `
+ )
     }
   
   const depthMaterial = new MeshDepthMaterial({
@@ -125,7 +140,7 @@ export default function modMaterial( {planeRef, onDepthMaterialUpdate, hovered} 
       `
       )
       
-    
+      
        
   
 
